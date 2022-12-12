@@ -1,13 +1,18 @@
+<!-- v-bind:value="value"
+      v-on:input="$emit('input', $event.target.value)" -->
+
 <template>
 	<div id="app">
 		<div>
+			<!-- Change to reg div w aria label -->
 			<input
 				type="text"
 				v-model="query"
 				placeholder="Search for columns..."
 			/>
+			<!-- Hide and show with aria labels -->
 			<ul>
-				<li v-for="column in filteredColumns" :key="column">
+				<li v-for="column in columns" :key="column">
 					<input
 						type="checkbox"
 						:value="column"
