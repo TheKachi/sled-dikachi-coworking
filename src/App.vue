@@ -51,7 +51,7 @@
 						</p>
 
 						<!-- Show and Hide icons  -->
-						<div class="absolute z-50 -right-[8px] top-[4px]">
+						<div class="absolute z-40 -right-[8px] top-[4px]">
 							<button @click="toggleDropdown" class="">
 								<span v-if="isShowing">
 									<svg
@@ -90,7 +90,7 @@
 				<!-- Dropdown  -->
 				<div
 					v-if="isShowing"
-					class="w-full cursor-pointer absolute top-[100%] z-[1000] bg-[#FFF] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+					class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 				>
 					<input
 						class="focus:border-transparent focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
