@@ -1,25 +1,30 @@
 <template>
 	<div id="app">
 		<div>
-			<input
-				type="text"
-				v-model="query"
-				placeholder="Search for columns..."
-			/>
-			<ul>
-				<li v-for="column in filteredColumns" :key="column">
+			<div @click="toggleDropdown" class="">
+				<input
+					class="w-[600px]"
+					type="text"
+					v-model="query"
+					placeholder="Search or select a column"
+				/>
+			</div>
+
+			<ul v-if="isShowing">
+				<li
+					@click.prevent="addColumn(column)"
+					v-for="column in filteredColumns"
+					:key="column"
+				>
 					<input
 						type="checkbox"
 						:value="column"
 						v-model="selectedColumns"
-						@change="addColumn(column)"
 					/>
 					{{ column }}
 				</li>
 			</ul>
 			<div v-if="selectedColumns.length > 0">
-				<h4>Selected Columns:</h4>
-				{{ selectedColumns }}}
 				<ul v-for="column in selectedColumns" :key="column">
 					<li>
 						<button @click="removeColumn(column)">X</button>
@@ -28,28 +33,36 @@
 				</ul>
 			</div>
 		</div>
+		<!-- <ColumnSelector
+			:columns="columns"
+			:selected-columns="selectedColumns"
+			@search="query = $event"
+			@add="addColumn"
+			@remove="removeColumn"
+		/> -->
 	</div>
 </template>
 
 <script>
+// import ColumnSelector from "./components/ColumnSelector.vue";
+
 export default {
 	name: "App",
-
 	data() {
 		return {
-			// The available columns for selection
 			columns: ["ID", "Total", "Links", "Number", "Status"],
-
-			// The selected columns
 			selectedColumns: [],
-			// The search query
 			query: "",
+			isShowing: false,
 		};
 	},
-
 	methods: {
+		toggleDropdown() {
+			this.isShowing = !this.isShowing;
+		},
 		// add column to selectedColumns array
 		addColumn(column) {
+			if (this.selectedColumns.includes(column)) return;
 			this.selectedColumns.push(column);
 		},
 		// remove column from selectedColumns array
@@ -59,7 +72,6 @@ export default {
 			);
 		},
 	},
-
 	computed: {
 		// return the column that matches the search query
 		filteredColumns() {
@@ -67,7 +79,11 @@ export default {
 				column.toLowerCase().includes(this.query.toLowerCase())
 			);
 		},
+		// orderedSelectedColumns() {
+		// 	return this.selectedColumns.sort();
+		// },
 	},
+	// components: { ColumnSelector },
 };
 </script>
 
