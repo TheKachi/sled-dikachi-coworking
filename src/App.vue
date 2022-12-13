@@ -1,9 +1,9 @@
 <template>
 	<div id="app">
 		<div>
-			<div @click="toggleDropdown" class="">
+			<div @click="toggleDropdown" class="border w-[250px]">
 				<input
-					class="w-[600px]"
+					class="w-full"
 					type="text"
 					v-model="query"
 					placeholder="Search or select a column"
@@ -58,12 +58,13 @@ export default {
 	},
 	methods: {
 		toggleDropdown() {
-			this.isShowing = !this.isShowing;
+			this.isShowing = true;
 		},
 		// add column to selectedColumns array
 		addColumn(column) {
 			if (this.selectedColumns.includes(column)) return;
 			this.selectedColumns.push(column);
+			// this.isShowing = false;
 		},
 		// remove column from selectedColumns array
 		removeColumn(column) {
