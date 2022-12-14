@@ -4,45 +4,17 @@
 		<div class="relative" :class="[width]">
 			<!-- Select Dropdown -->
 			<div
-				@click="showDropdown"
+				@click="toggleDropdown"
 				class="text-[14px] pl-[10px] pr-[16px] py-[10px] flex items-center cursor-pointer rounded-4 z-0 bg-[#F8FAFC] focus:bg-[#F8FAFC]"
 			>
 				<div class="relative w-full">
-					<!-- Selected columns in order -->
-					<ul
-						class="flex flex-wrap gap-[4px]"
+					<!-- Column(s) selected  -->
+					<span
+						class="border p-[4px] text-xs text-[#475569] bg-[#F8FAFC] border-[#E2E8F0]"
 						v-if="selectedColumns.length"
 					>
-						<li
-							v-for="column in selectedColumns"
-							:key="column"
-							class="border flex items-center justify-between rounded text-center p-[4px] text-xs text-[#475569] bg-[#F8FAFC] border-[#E2E8F0]"
-						>
-							{{ column }}
-							<button @click="$emit('remove', column)">
-								<svg
-									width="10"
-									height="10"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										d="M12 4L4 12"
-										stroke="#475569"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-									<path
-										d="M4 4L12 12"
-										stroke="#475569"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-								</svg>
-							</button>
-						</li>
-					</ul>
+						{{ selectedColumns.length }} selected
+					</span>
 
 					<!-- No column selected  -->
 					<p class="text-[#475569] text-[16px]" v-else>
@@ -50,9 +22,9 @@
 					</p>
 
 					<!-- Show and Hide icons  -->
-					<div class="absolute z-10 -right-[12px] top-[4px]">
+					<div class="absolute z-40 -right-[12px] top-[4px]">
 						<button @click="$emit('toggle')" class="">
-							<span v-if="isShowing">
+							<div v-if="isShowing" class="rotate-180">
 								<svg
 									width="16"
 									height="16"
@@ -65,9 +37,9 @@
 										fill="#475569"
 									/>
 								</svg>
-							</span>
+							</div>
 
-							<span v-else>
+							<div v-else>
 								<svg
 									width="16"
 									height="16"
@@ -80,7 +52,7 @@
 										fill="#475569"
 									/>
 								</svg>
-							</span>
+							</div>
 						</button>
 					</div>
 				</div>
@@ -89,22 +61,35 @@
 			<!-- Dropdown  -->
 			<div
 				v-if="isShowing"
-				class="w-full cursor-pointer absolute top-[100%] z-10 bg-[#FFF] min-h-[250px] max-h-[250px] overflow-y-auto mt-[22px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+				class="w-full border cursor-pointer absolute top-[100%] z-40 bg-[#FFF] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 			>
-				<input
-					class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
-					type="text"
-					placeholder="Search"
-					:value="value"
-					@input="$emit('input', $event.target.value)"
-				/>
-				<ul v-if="filteredColumns.length > 0" class="bg-white h-full">
+				<div class="relative">
+          <!-- Search  -->
+					<input
+						class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
+						type="text"
+						placeholder="Search"
+						:value="modelValue"
+						@input="$emit('update:modelValue', $event.target.value)"
+					/>
+
+					<button
+						v-show="modelValue !== ''"
+						@click="modelValue = ''"
+						class="absolute right-0 top-[4px] text-black"
+					>
+						clear
+					</button>
+				</div>
+
+				<ul v-if="filtered.length > 0" class="bg-white h-full">
 					<li
 						@click="$emit('add', column)"
-						v-for="column in filteredColumns"
+						v-for="column in filtered"
 						:key="column"
 						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
 					>
+						<span v-if="selectedColumns.includes(column)">✔️</span>
 						{{ column }}
 					</li>
 				</ul>
@@ -113,12 +98,6 @@
 					No items match your search
 				</p>
 			</div>
-
-			<!-- Hide and show  -->
-			<button @click="toggleDropdown" class="underline float-right">
-				<span v-if="isShowing" class="text-[12px] text-[#000]">Hide</span>
-				<span v-else class="text-[12px] text-[#000]">Show</span>
-			</button>
 		</div>
 	</div>
 </template>
@@ -135,7 +114,7 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		filteredColumns: {
+		filtered: {
 			type: Array,
 			default: () => [],
 		},
@@ -147,14 +126,16 @@ export default {
 			type: String,
 			default: "Search or select a column",
 		},
+		modelValue: {
+			type: String,
+			default: "",
+		},
 	},
-
 	data() {
 		return {
 			isShowing: false,
 		};
 	},
-
 	methods: {
 		toggleDropdown() {
 			this.isShowing = !this.isShowing;
@@ -163,7 +144,6 @@ export default {
 			this.isShowing = true;
 		},
 	},
-
-	emits: ["add", "remove", "input"],
+	emits: ["add", "remove", "update:modelValue"],
 };
 </script>

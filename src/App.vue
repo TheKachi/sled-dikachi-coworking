@@ -9,13 +9,25 @@
 				<ColumnSelector
 					:columns="columns"
 					:selected-columns="selectedColumns"
-					:filtered-columns="filteredColumns"
-					v-model="query"
-					@search="query = $event"
+					:filtered="filteredColumns"
 					@add="addColumn"
 					@remove="removeColumn"
+					v-model="query"
 				/>
 			</div>
+
+			<ul
+				v-if="filteredColumns.length > 0"
+				class="bg-white h-full text-white"
+			>
+				<li
+					v-for="column in filteredColumns"
+					:key="column"
+					class="px-[10px] py-[6px] text-white text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
+				>
+					{{ column }}
+				</li>
+			</ul>
 
 			<!-- Show Dialog button  -->
 			<button
@@ -49,17 +61,30 @@
 			</div>
 
 			<div slot="body">
-				<div class="md:min-h-[300px] flex flex-col gap-[6px]">
+				<div
+					class="md:max-h-[400px] overflow-y-scroll flex flex-col gap-[6px]"
+				>
 					<p class="text-[#475569] text-[14px]">Columns</p>
-
+					<div>
+						<ul v-if="filteredColumns.length > 0" class="bg-white h-full">
+							<li
+								v-for="column in filteredColumns"
+								:key="column"
+								class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
+							>
+								{{ column }}
+							</li>
+						</ul>
+					</div>
+					<!-- 
 					<ColumnSelector
 						:columns="columns"
 						:selected-columns="selectedColumns"
 						:filtered-columns="filteredColumns"
-						v-model="query"
 						@add="addColumn"
 						@remove="removeColumn"
-					/>
+					/> -->
+					<!-- v-model="query" -->
 				</div>
 			</div>
 
@@ -71,6 +96,7 @@
 					>
 						Cancel
 					</button>
+          
 					<button
 						class="bg-black text-white px-[24px] py-[4px] mt-[24px]"
 						@click="showDialog = false"
@@ -80,69 +106,12 @@
 				</div>
 			</div>
 		</Modal>
-
-		<!-- Dialog  -->
-		<!-- <Dialog v-if="showDialog" @close="showDialog = false">
-			<div slot="header">
-				<div class="flex flex-col gap-[4px] items-start">
-					<div class="flex gap-[4px] items-center">
-						<img
-							src="./assets/icons/gear.svg"
-							alt="settings icon"
-							class="w-[24px] h-[24px]"
-						/>
-						<h5 class="text-lg lg:text-2xl font-bold text-black">
-							Checks
-						</h5>
-					</div>
-
-					<p class="text-[#868686] text-[16px]">
-						Check help to control the data expected and fulfills a defined
-						service level. Activated checks are executed on a schedule.
-					</p>
-				</div>
-			</div>
-
-			<div slot="body">
-				<div class="flex flex-col gap-[6px]">
-					<p class="text-[#475569] text-[14px]">Columns</p>
-
-					<ColumnSelector
-						:columns="columns"
-						:selected-columns="selectedColumns"
-						:filtered-columns="filteredColumns"
-						v-model="query"
-						@add="addColumn"
-						@remove="removeColumn"
-					/>
-				</div>
-			</div>
-
-			<div slot="footer">
-				<div class="flex justify-end gap-[8px]">
-					<button
-						class="border px-[24px] py-[4px] mt-[24px]"
-						@click="showDialog = false"
-					>
-						Cancel
-					</button>
-					<button
-						class="bg-[#2F80ED] text-white px-[24px] py-[4px] mt-[24px]"
-						@click="showDialog = false"
-					>
-						Save
-					</button>
-				</div>
-			</div>
-		</Dialog> -->
 	</div>
 </template>
 
 <script>
-// import ColumnSelector from "./components/ColumnSelector.vue";
 import ColumnSelector from "./components/ColumnSelector.vue";
 import Modal from "./components/Modal.vue";
-// import Dialog from "./components/Dialog.vue";
 
 export default {
 	name: "App",
@@ -167,28 +136,35 @@ export default {
 			],
 			selectedColumns: [],
 			query: "",
+			anotherQuery: "",
 			isShowing: false,
 			showDialog: false,
 		};
 	},
 	methods: {
-		// showDropdown() {
-		// 	this.isShowing = true;
-		// },
-
-		// closeDropdown() {
-		// 	toggleDropdown();
-		// 	alert(this.isShowing);
-		// },
-
 		toggleDropdown() {
 			this.isShowing = !this.isShowing;
 		},
 
 		// add column to selectedColumns array
 		addColumn(column) {
-			if (this.selectedColumns.includes(column)) return;
-			this.selectedColumns.unshift(column);
+			if (this.selectedColumns.includes(column)) {
+				this.selectedColumns.splice(
+					this.selectedColumns.indexOf(column),
+					1
+				);
+				// this.columns.splice(this.columns.length - 1, 1, column);
+			} else {
+				this.selectedColumns.push(column);
+
+				const fromIndex = this.columns.indexOf(column);
+				const toIndex = 0;
+
+				const element = this.columns.splice(fromIndex, 1)[0];
+				// console.log(element); // ['css']
+
+				this.columns.splice(toIndex, 0, element);
+			}
 		},
 
 		// remove column from selectedColumns array
@@ -204,6 +180,22 @@ export default {
 			return this.columns.filter((column) =>
 				column.toLowerCase().includes(this.query.toLowerCase())
 			);
+		},
+
+		filtered: {
+			// getter
+			get: function () {
+				return this.columns.filter((column) =>
+					column.toLowerCase().includes(this.query.toLowerCase())
+				);
+			},
+			// setter
+			set: function (newValue) {
+				this.columns = newValue;
+				// var names = newValue.split(" ");
+				// this.firstName = names[0];
+				// this.lastName = names[names.length - 1];
+			},
 		},
 	},
 	components: {
