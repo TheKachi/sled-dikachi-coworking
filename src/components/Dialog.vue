@@ -2,21 +2,16 @@
 	<!-- -->
 	<!-- flex flex-col h-[65vh] justify-center items-center z-50 -->
 	<div
-		class="fixed z-50 inset-x-0 top-[15%] overflow-y-auto"
+		class="fixed z-50 inset-0"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div>
 			<div
 				class="fixed inset-0 bg-black/60"
 				aria-hidden="true"
 				@click="$emit('close')"
 			></div>
-			<!-- <span
-				class="hidden sm:inline-block sm:align-middle sm:h-screen"
-				aria-hidden="true"
-				>&#8203;</span
-			> -->
+		
 			<div
 				class="border mx-auto bg-white rounded text-left overflow-hidden shadow-[0_4px_50px_rgba(0,0,0,0.1)] transform transition-all"
 				:class="[width, height]"
@@ -73,7 +68,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 	</div>
 </template>
 
