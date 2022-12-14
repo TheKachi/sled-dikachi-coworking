@@ -27,7 +27,7 @@
 			</button>
 		</div>
 
-		<Modal v-if="showDialog" @close="showDialog = false">
+		<Modal :isActive="showDialog" @close="showDialog = false">
 			<div slot="header">
 				<div class="flex flex-col gap-[4px] items-start">
 					<div class="flex gap-[4px] items-center">
@@ -49,7 +49,7 @@
 			</div>
 
 			<div slot="body">
-				<div class="md:min-h-[400px] flex flex-col gap-[6px]">
+				<div class="md:min-h-[300px] flex flex-col gap-[6px]">
 					<p class="text-[#475569] text-[14px]">Columns</p>
 
 					<ColumnSelector
@@ -72,7 +72,7 @@
 						Cancel
 					</button>
 					<button
-						class="bg-[#2F80ED] text-white px-[24px] py-[4px] mt-[24px]"
+						class="bg-black text-white px-[24px] py-[4px] mt-[24px]"
 						@click="showDialog = false"
 					>
 						Save
