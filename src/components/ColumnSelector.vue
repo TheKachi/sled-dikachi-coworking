@@ -1,81 +1,130 @@
 <template>
 	<div>
-		<!-- Change to reg div w aria label -->
-		<div @click="toggleDropdown" class="relative">
-			<input
-				type="search"
-				:value="query"
-				v-on:input="$emit('search', $event.target.value)"
-				aria-label="search"
-				placeholder="Search or select"
-			/>
-			<!-- <ul v-if="selectedColumns.length > 0">
-				<li v-for="column in selectedColumns" :key="column">
-					<button @click="$emit(remove(column))">X</button>
-					{{ column }}
-				</li>
-			</ul> -->
-		</div>
+		<!-- Column Selector Container -->
+		<div class="relative" :class="[width]">
+			<!-- Select Dropdown -->
+			<div
+				@click="showDropdown"
+				class="text-[14px] pl-[10px] pr-[16px] py-[10px] flex items-center cursor-pointer rounded-4 z-0 bg-[#F8FAFC] focus:bg-[#F8FAFC]"
+			>
+				<div class="relative w-full">
+					<!-- Selected columns in order -->
+					<ul
+						class="flex flex-wrap gap-[4px]"
+						v-if="selectedColumns.length"
+					>
+						<li
+							v-for="column in selectedColumns"
+							:key="column"
+							class="border flex items-center justify-between rounded text-center p-[4px] text-xs text-[#475569] bg-[#F8FAFC] border-[#E2E8F0]"
+						>
+							{{ column }}
+							<button @click="$emit('remove', column)">
+								<svg
+									width="10"
+									height="10"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M12 4L4 12"
+										stroke="#475569"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+									<path
+										d="M4 4L12 12"
+										stroke="#475569"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+								</svg>
+							</button>
+						</li>
+					</ul>
 
-		<ul v-if="showDropdown" class="absolute w-full">
-			<!-- @click="$emit(add(column))" -->
-			<li v-for="column in columns" :key="column">
-				<!-- <input
-					type="checkbox"
-					:value="column"
-					v-on:input="$emit('input', $event.target.value)"
-					@change="$emit('add', $event.target.value)"
-				/> -->
-				<!-- <input
-					type="checkbox"
-					:value="column"
-					v-bind:checked="checked"
-					v-on:change="$emit('change', $event.target.checked)"
-				/> -->
+					<!-- No column selected  -->
+					<p class="text-[#475569] text-[16px]" v-else>
+						{{ placeholder }}
+					</p>
+
+					<!-- Show and Hide icons  -->
+					<div class="absolute z-40 -right-[12px] top-[4px]">
+						<button @click="$emit('toggle')" class="">
+							<span v-if="isShowing">
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M11.9465 5.45312H7.79317H4.05317C3.41317 5.45312 3.09317 6.22646 3.5465 6.67979L6.99983 10.1331C7.55317 10.6865 8.45317 10.6865 9.0065 10.1331L10.3198 8.81979L12.4598 6.67979C12.9065 6.22646 12.5865 5.45312 11.9465 5.45312Z"
+										fill="#475569"
+									/>
+								</svg>
+							</span>
+
+							<span v-else>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M11.9465 5.45312H7.79317H4.05317C3.41317 5.45312 3.09317 6.22646 3.5465 6.67979L6.99983 10.1331C7.55317 10.6865 8.45317 10.6865 9.0065 10.1331L10.3198 8.81979L12.4598 6.67979C12.9065 6.22646 12.5865 5.45312 11.9465 5.45312Z"
+										fill="#475569"
+									/>
+								</svg>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Dropdown  -->
+			<div
+				v-if="isShowing"
+				class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] min-h-[250px] max-h-[250px] overflow-y-auto mt-[22px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+			>
 				<input
-					type="checkbox"
-					:id="column"
-					:value="column"
-					:name="column"
-					:checked="selectedColumns.includes(column)"
-					v-on:change="$emit('add', $event.target.value)"
+					class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
+					type="text"
+					placeholder="Search"
 				/>
-				{{ column }}
-			</li>
-		</ul>
+				<ul v-if="filteredColumns.length > 0" class="bg-white h-full">
+					<li
+						@click="$emit('add', column)"
+						v-for="column in filteredColumns"
+						:key="column"
+						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
+					>
+						{{ column }}
+					</li>
+				</ul>
 
-		<div>
-			<h4>Selected Columns:</h4>
-			{{ selectedColumns }}
-			<ul v-for="column in selectedColumns" :key="column">
-				<li>
-					<button @click="$emit('remove')">X</button>
-					{{ column }}
-				</li>
-			</ul>
+				<p v-else class="text-center mt-[80px]">
+					No items match your search
+				</p>
+			</div>
+
+			<!-- Hide and show  -->
+			<button @click="toggleDropdown" class="underline float-right">
+				<span v-if="isShowing" class="text-[12px] text-[#000]">Hide</span>
+				<span v-else class="text-[12px] text-[#000]">Show</span>
+			</button>
 		</div>
 	</div>
 </template>
 
 <script>
 export default {
-	name: "App",
-
-	model: {
-		prop: "checked",
-		event: "change",
-	},
-
+	name: "ColumnSelector",
 	props: {
-		checked: Boolean,
-		cmd: {
-			type: String,
-			default: "Select Columns",
-		},
-		value: {
-			type: String,
-			default: "",
-		},
 		columns: {
 			type: Array,
 			default: () => [],
@@ -84,44 +133,35 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		filteredColumns: {
+			type: Array,
+			default: () => [],
+		},
+		width: {
+			type: String,
+			default: "w-[440px]",
+		},
+		placeholder: {
+			type: String,
+			default: "Search or select a column",
+		},
 	},
-
-	emits: ["search", "input", "add", "remove"],
 
 	data() {
 		return {
-			showDropdown: false,
+			isShowing: false,
 		};
 	},
 
 	methods: {
 		toggleDropdown() {
-			this.showDropdown = !this.showDropdown;
+			this.isShowing = !this.isShowing;
+		},
+		showDropdown() {
+			this.isShowing = true;
 		},
 	},
 
-	// methods: {
-	// 	// add column to selectedColumns array
-	// 	addColumn(column) {
-	// 		this.selectedColumns.push(column);
-	// 	},
-	// 	// remove column from selectedColumns array
-	// 	removeColumn(column) {
-	// 		this.selectedColumns = this.selectedColumns.filter(
-	// 			(c) => c !== column
-	// 		);
-	// 	},
-	// },
-
-	// computed: {
-	// 	// return the column that matches the search query
-	// 	columns() {
-	// 		return this.columns.filter((column) =>
-	// 			column.toLowerCase().includes(this.query.toLowerCase())
-	// 		);
-	// 	},
-	// },
+	emits: ["add", "remove"],
 };
 </script>
-
-<style></style>
