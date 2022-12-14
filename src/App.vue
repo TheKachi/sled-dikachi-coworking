@@ -58,10 +58,26 @@
 						:selected-columns="selectedColumns"
 						:filtered-columns="filteredColumns"
 						v-model="query"
-						@search="query = $event"
 						@add="addColumn"
 						@remove="removeColumn"
 					/>
+				</div>
+			</div>
+
+			<div slot="footer">
+				<div class="flex justify-end gap-[8px]">
+					<button
+						class="border px-[24px] py-[4px] mt-[24px]"
+						@click="showDialog = false"
+					>
+						Cancel
+					</button>
+					<button
+						class="bg-[#2F80ED] text-white px-[24px] py-[4px] mt-[24px]"
+						@click="showDialog = false"
+					>
+						Save
+					</button>
 				</div>
 			</div>
 		</Dialog>

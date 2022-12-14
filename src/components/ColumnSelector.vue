@@ -95,6 +95,8 @@
 					class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
 					type="text"
 					placeholder="Search"
+					:value="value"
+					@input="$emit('input', $event.target.value)"
 				/>
 				<ul v-if="filteredColumns.length > 0" class="bg-white h-full">
 					<li
@@ -162,6 +164,6 @@ export default {
 		},
 	},
 
-	emits: ["add", "remove"],
+	emits: ["add", "remove", "input"],
 };
 </script>

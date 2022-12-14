@@ -64,7 +64,7 @@
 					<div class="border mt-auto px-[24px] py-[12px]">
 						<slot name="footer">
 							<button
-								class="modal-default-button"
+								class="bg-black text-white px-[24px] py-[12px] rounded"
 								@click="$emit('close')"
 							>
 								OK
