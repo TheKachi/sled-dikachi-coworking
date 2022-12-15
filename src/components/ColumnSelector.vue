@@ -75,7 +75,7 @@
 				</div>
 				<button
 					v-show="value !== ''"
-					@click="$emit('clear')"
+					@click="$emit('clear-search')"
 					class="absolute right-[16px] top-[12px] text-black"
 				>
 					<svg
@@ -102,7 +102,7 @@
 
 				<ul v-if="filtered.length > 0" class="bg-white min-h-[250px]">
 					<li
-						@click="$emit('add', column)"
+						@click="$emit('toggle', column)"
 						v-for="column in filtered"
 						:key="column"
 						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
@@ -162,6 +162,6 @@ export default {
 			this.isShowing = true;
 		},
 	},
-	emits: ["add", "remove", "clear"],
+	emits: ["toggle", "clear-search", "input"],
 };
 </script>

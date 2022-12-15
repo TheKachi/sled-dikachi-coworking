@@ -11,9 +11,9 @@
 					:columns="columns"
 					:selected-columns="selectedColumns"
 					:filtered="filteredColumns"
-					@add="addColumn"
+					@toggle="toggleColumn"
 					@remove="removeColumn"
-					@clear="clearSearch"
+					@clear-search="clearSearch"
 					v-model="query"
 				/>
 			</div>
@@ -137,53 +137,91 @@ export default {
 		},
 
 		// add column to selectedColumns array
-		addColumn(column) {
+		toggleColumn(column) {
+			// remove from selected array
 			if (this.selectedColumns.includes(column)) {
-				this.selectedColumns.splice(
-					this.selectedColumns.indexOf(column),
-					1
-				);
+				this.removeColumn(column);
 			} else {
-				this.selectedColumns.push(column);
-
-				const fromIndex = this.columns.indexOf(column);
-				const toIndex = 0;
-
-				const element = this.columns.splice(fromIndex, 1)[0];
-
-				this.columns.splice(toIndex, 0, element);
-				this.query = "";
+				this.addColumn(column);
 			}
 		},
 
-		// remove column from selectedColumns array
+		// if (this.selectedColumns.includes(column)) {
+		// 		this.selectedColumns.splice(
+		// 			this.selectedColumns.indexOf(column),
+		// 			1
+		//     );
+		//     // add to selected array and move to the top
+		//   }
+
+		// this.selectedColumns.push(column);
+
+		// const fromIndex = this.columns.indexOf(column);
+		// const toIndex = 0;
+
+		// const element = this.columns.splice(fromIndex, 1)[0];
+
+		// this.columns.splice(toIndex, 0, element);
+		// this.query = "";
+
+		// toggleColumn(column) {
+		//   if (this.selectedColumns.includes(column)) {
+		//     this.removeColumn(column);
+		//   } else {
+		//     this.addColumn(column);
+		//   }
+		// },
+		// },
+
+		// add column to selectedColumns array and move to the top
+		addColumn(column) {
+			this.selectedColumns.push(column);
+
+			// move column to the top of the list
+			const fromIndex = this.columns.indexOf(column);
+			const toIndex = 0;
+			const element = this.columns.splice(fromIndex, 1)[0];
+
+			this.columns.splice(toIndex, 0, element);
+
+			this.clearSearch();
+		},
+
+		// remove column from selectedColumns array and move to the bottom
 		removeColumn(column) {
 			this.selectedColumns = this.selectedColumns.filter(
 				(c) => c !== column
 			);
+			// move column back to the original position
+			const fromIndex = this.columns.indexOf(column);
+			const toIndex = this.columns.length - 1;
+			const element = this.columns.splice(fromIndex, 1)[0];
+
+			this.columns.splice(toIndex, 0, element);
+
+			this.clearSearch();
 		},
 
 		clearSearch() {
-			console.log("clicked me");
 			this.query = "";
 			// return the columns to their original order
-			this.columns = [
-				"ID",
-				"Total",
-				"Links",
-				"Number",
-				"Status",
-				"Billing",
-				"Refunds",
-				"Version",
-				"Cart_Tax",
-				"Currency",
-				"Set_Paid",
-				"Shipping",
-				"Cart_Hash",
-				"Date_Paid",
-				"Fee_Lines",
-			];
+			// this.columns = [
+			// 	"ID",
+			// 	"Total",
+			// 	"Links",
+			// 	"Number",
+			// 	"Status",
+			// 	"Billing",
+			// 	"Refunds",
+			// 	"Version",
+			// 	"Cart_Tax",
+			// 	"Currency",
+			// 	"Set_Paid",
+			// 	"Shipping",
+			// 	"Cart_Hash",
+			// 	"Date_Paid",
+			// 	"Fee_Lines",
+			// ];
 		},
 	},
 
@@ -195,7 +233,6 @@ export default {
 		// return the column that matches the search query
 		filteredColumns() {
 			let columns = this.columns;
-			console.log("current query:", this.query);
 			if (this.query !== "")
 				return columns.filter((column) =>
 					column.toLowerCase().includes(this.query.toLowerCase())
