@@ -61,28 +61,46 @@
 			<!-- Dropdown  -->
 			<div
 				v-if="isShowing"
-				class="w-full border cursor-pointer absolute top-[100%] z-40 bg-[#FFF] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+				class="w-full border border-red-600 cursor-pointer absolute top-[100%] z-40 bg-[#FFF] h-[250px] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 			>
+				<!-- Search  -->
 				<div class="relative">
-          <!-- Search  -->
 					<input
-						class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px]"
+						class="focus:border-[#475569] focus:ring-0 focus:outline-none border bg-transparent w-full text-[14px] text-[#100A37] px-[10px] py-[10px]"
 						type="text"
 						placeholder="Search"
-						:value="modelValue"
-						@input="$emit('update:modelValue', $event.target.value)"
+						:value="value"
+						@input="$emit('input', $event.target.value)"
 					/>
-
-					<button
-						v-show="modelValue !== ''"
-						@click="modelValue = ''"
-						class="absolute right-0 top-[4px] text-black"
-					>
-						clear
-					</button>
 				</div>
+				<button
+					v-show="value !== ''"
+					@click="$emit('clear')"
+					class="absolute right-[16px] top-[12px] text-black"
+				>
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 16 16"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M12 4L4 12"
+							stroke="#475569"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+						<path
+							d="M4 4L12 12"
+							stroke="#475569"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+				</button>
 
-				<ul v-if="filtered.length > 0" class="bg-white h-full">
+				<ul v-if="filtered.length > 0" class="bg-white min-h-[250px]">
 					<li
 						@click="$emit('add', column)"
 						v-for="column in filtered"
@@ -94,9 +112,9 @@
 					</li>
 				</ul>
 
-				<p v-else class="text-center mt-[80px]">
-					No items match your search
-				</p>
+				<div v-else class="h-[250px]">
+					<p class="text-center mt-[80px]">No items match your search</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -126,7 +144,7 @@ export default {
 			type: String,
 			default: "Search or select a column",
 		},
-		modelValue: {
+		value: {
 			type: String,
 			default: "",
 		},
@@ -144,6 +162,6 @@ export default {
 			this.isShowing = true;
 		},
 	},
-	emits: ["add", "remove", "update:modelValue"],
+	emits: ["add", "remove", "clear"],
 };
 </script>

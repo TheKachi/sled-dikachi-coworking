@@ -1,33 +1,22 @@
 <template>
-	<div id="app" class="w-screen overflow-hidden">
+	<div id="app" class="w-screen h-screen overflow-hidden">
 		<!-- Column Selector Container -->
 		<div
 			class="mx-auto mt-[100px] px-[200px] flex gap-[40px] md:gap-[60px] items-start"
 		>
 			<div>
 				<p class="text-[#475569] text-[14px] mb-[6px]">Columns</p>
+
 				<ColumnSelector
 					:columns="columns"
 					:selected-columns="selectedColumns"
 					:filtered="filteredColumns"
 					@add="addColumn"
 					@remove="removeColumn"
+					@clear="clearSearch"
 					v-model="query"
 				/>
 			</div>
-
-			<ul
-				v-if="filteredColumns.length > 0"
-				class="bg-white h-full text-white"
-			>
-				<li
-					v-for="column in filteredColumns"
-					:key="column"
-					class="px-[10px] py-[6px] text-white text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
-				>
-					{{ column }}
-				</li>
-			</ul>
 
 			<!-- Show Dialog button  -->
 			<button
@@ -96,7 +85,7 @@
 					>
 						Cancel
 					</button>
-          
+
 					<button
 						class="bg-black text-white px-[24px] py-[4px] mt-[24px]"
 						@click="showDialog = false"
@@ -115,6 +104,7 @@ import Modal from "./components/Modal.vue";
 
 export default {
 	name: "App",
+
 	data() {
 		return {
 			columns: [
@@ -173,13 +163,45 @@ export default {
 				(c) => c !== column
 			);
 		},
+
+		clearSearch() {
+			console.log("clicked me");
+			this.query = "";
+			// return the columns to their original order
+			this.columns = [
+				"ID",
+				"Total",
+				"Links",
+				"Number",
+				"Status",
+				"Billing",
+				"Refunds",
+				"Version",
+				"Cart_Tax",
+				"Currency",
+				"Set_Paid",
+				"Shipping",
+				"Cart_Hash",
+				"Date_Paid",
+				"Fee_Lines",
+			];
+		},
 	},
+
+	// watch(query) {
+
+	// },
+
 	computed: {
 		// return the column that matches the search query
 		filteredColumns() {
-			return this.columns.filter((column) =>
-				column.toLowerCase().includes(this.query.toLowerCase())
-			);
+			let columns = this.columns;
+			console.log("current query:", this.query);
+			if (this.query !== "")
+				return columns.filter((column) =>
+					column.toLowerCase().includes(this.query.toLowerCase())
+				);
+			else return this.columns;
 		},
 
 		filtered: {
@@ -202,6 +224,10 @@ export default {
 		// Dialog,
 		Modal,
 		ColumnSelector,
+	},
+	mounted() {
+		console.log("query:", this.query);
+		console.log("filter:", this.filteredColumns);
 	},
 };
 </script>
