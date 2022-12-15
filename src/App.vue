@@ -143,7 +143,6 @@ export default {
 					this.selectedColumns.indexOf(column),
 					1
 				);
-				// this.columns.splice(this.columns.length - 1, 1, column);
 			} else {
 				this.selectedColumns.push(column);
 
@@ -151,9 +150,9 @@ export default {
 				const toIndex = 0;
 
 				const element = this.columns.splice(fromIndex, 1)[0];
-				// console.log(element); // ['css']
 
 				this.columns.splice(toIndex, 0, element);
+				this.query = "";
 			}
 		},
 

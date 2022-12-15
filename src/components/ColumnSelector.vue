@@ -61,7 +61,7 @@
 			<!-- Dropdown  -->
 			<div
 				v-if="isShowing"
-				class="w-full border border-red-600 cursor-pointer absolute top-[100%] z-40 bg-[#FFF] h-[250px] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+				class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] h-[250px] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 			>
 				<!-- Search  -->
 				<div class="relative">
