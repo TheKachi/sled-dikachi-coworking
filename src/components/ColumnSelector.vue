@@ -11,9 +11,9 @@
 					<!-- Column(s) selected  -->
 					<span
 						class="border p-[4px] text-xs text-[#475569] bg-[#F8FAFC] border-[#E2E8F0]"
-						v-if="selectedColumns.length"
+						v-if="selected.length"
 					>
-						{{ selectedColumns.length }} selected
+						{{ selected.length }} selected
 					</span>
 
 					<!-- No column selected  -->
@@ -71,34 +71,33 @@
 						placeholder="Search"
 						:value="value"
 						@input="$emit('input', $event.target.value)"
-					/>
-				</div>
-				<button
-					v-show="value !== ''"
-					@click="$emit('clear-search')"
-					class="absolute right-[16px] top-[12px] text-black"
-				>
-					<svg
-						width="16"
-						height="16"
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
+					/><button
+						v-show="value !== ''"
+						@click="$emit('clear-search')"
+						class="absolute right-[16px] top-[12px] text-black"
 					>
-						<path
-							d="M12 4L4 12"
-							stroke="#475569"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-						<path
-							d="M4 4L12 12"
-							stroke="#475569"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
-				</button>
+						<svg
+							width="16"
+							height="16"
+							viewBox="0 0 16 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M12 4L4 12"
+								stroke="#475569"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M4 4L12 12"
+								stroke="#475569"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</button>
+				</div>
 
 				<ul v-if="filtered.length > 0" class="bg-white min-h-[250px]">
 					<li
@@ -107,7 +106,7 @@
 						:key="column"
 						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
 					>
-						<span v-if="selectedColumns.includes(column)">✔️</span>
+						<span v-if="selected.includes(column)">✔️</span>
 						{{ column }}
 					</li>
 				</ul>
@@ -128,7 +127,7 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		selectedColumns: {
+		selected: {
 			type: Array,
 			default: () => [],
 		},

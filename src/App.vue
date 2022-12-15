@@ -8,8 +8,8 @@
 				<p class="text-[#475569] text-[14px] mb-[6px]">Columns</p>
 
 				<ColumnSelector
-					:columns="columns"
-					:selected-columns="selectedColumns"
+					:columns="unselectedColumns"
+					:selected="selectedColumns"
 					:filtered="filteredColumns"
 					@toggle="toggleColumn"
 					@remove="removeColumn"
@@ -125,12 +125,14 @@ export default {
 				"Fee_Lines",
 			],
 			selectedColumns: [],
+			unselectedColumns: [],
 			query: "",
 			anotherQuery: "",
 			isShowing: false,
 			showDialog: false,
 		};
 	},
+
 	methods: {
 		toggleDropdown() {
 			this.isShowing = !this.isShowing;
@@ -146,45 +148,15 @@ export default {
 			}
 		},
 
-		// if (this.selectedColumns.includes(column)) {
-		// 		this.selectedColumns.splice(
-		// 			this.selectedColumns.indexOf(column),
-		// 			1
-		//     );
-		//     // add to selected array and move to the top
-		//   }
-
-		// this.selectedColumns.push(column);
-
-		// const fromIndex = this.columns.indexOf(column);
-		// const toIndex = 0;
-
-		// const element = this.columns.splice(fromIndex, 1)[0];
-
-		// this.columns.splice(toIndex, 0, element);
-		// this.query = "";
-
-		// toggleColumn(column) {
-		//   if (this.selectedColumns.includes(column)) {
-		//     this.removeColumn(column);
-		//   } else {
-		//     this.addColumn(column);
-		//   }
-		// },
-		// },
-
 		// add column to selectedColumns array and move to the top
 		addColumn(column) {
 			this.selectedColumns.push(column);
-
-			// move column to the top of the list
-			const fromIndex = this.columns.indexOf(column);
-			const toIndex = 0;
-			const element = this.columns.splice(fromIndex, 1)[0];
-
-			this.columns.splice(toIndex, 0, element);
+			this.unselectedColumns = this.unselectedColumns.filter(
+				(c) => c !== column
+			);
 
 			this.clearSearch();
+			// // move column to the top
 		},
 
 		// remove column from selectedColumns array and move to the bottom
@@ -192,68 +164,35 @@ export default {
 			this.selectedColumns = this.selectedColumns.filter(
 				(c) => c !== column
 			);
-			// move column back to the original position
-			const fromIndex = this.columns.indexOf(column);
-			const toIndex = this.columns.length - 1;
-			const element = this.columns.splice(fromIndex, 1)[0];
 
-			this.columns.splice(toIndex, 0, element);
+			//  unselected array
+			this.unselectedColumns.unshift(column);
 
 			this.clearSearch();
 		},
 
 		clearSearch() {
 			this.query = "";
-			// return the columns to their original order
-			// this.columns = [
-			// 	"ID",
-			// 	"Total",
-			// 	"Links",
-			// 	"Number",
-			// 	"Status",
-			// 	"Billing",
-			// 	"Refunds",
-			// 	"Version",
-			// 	"Cart_Tax",
-			// 	"Currency",
-			// 	"Set_Paid",
-			// 	"Shipping",
-			// 	"Cart_Hash",
-			// 	"Date_Paid",
-			// 	"Fee_Lines",
-			// ];
 		},
 	},
 
-	// watch(query) {
-
-	// },
+	filterColumns(columns) {
+		if (this.query !== "") {
+			return columns.filter((column) =>
+				column.toLowerCase().includes(this.query.toLowerCase())
+			);
+		} else return columns;
+	},
 
 	computed: {
 		// return the column that matches the search query
 		filteredColumns() {
-			let columns = this.columns;
-			if (this.query !== "")
+			let columns = this.selectedColumns.concat(this.unselectedColumns);
+			if (this.query !== "") {
 				return columns.filter((column) =>
 					column.toLowerCase().includes(this.query.toLowerCase())
 				);
-			else return this.columns;
-		},
-
-		filtered: {
-			// getter
-			get: function () {
-				return this.columns.filter((column) =>
-					column.toLowerCase().includes(this.query.toLowerCase())
-				);
-			},
-			// setter
-			set: function (newValue) {
-				this.columns = newValue;
-				// var names = newValue.split(" ");
-				// this.firstName = names[0];
-				// this.lastName = names[names.length - 1];
-			},
+			} else return columns;
 		},
 	},
 	components: {
@@ -262,8 +201,7 @@ export default {
 		ColumnSelector,
 	},
 	mounted() {
-		console.log("query:", this.query);
-		console.log("filter:", this.filteredColumns);
+		this.unselectedColumns = this.columns;
 	},
 };
 </script>
