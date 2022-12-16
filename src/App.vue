@@ -10,7 +10,7 @@
 					:selected="selectedOrders"
 					:filtered="filteredOrders"
 					@toggle="toggleOrders"
-					@clear-search="clearColumnSearch"
+					@clear-search="orderQuery = ''"
 					v-model="orderQuery"
 					placeholder="Search or select Order checks"
 				/>
@@ -56,38 +56,21 @@
 			:isActive="showModalWithFooter"
 			@close="showModalWithFooter = false"
 		>
-			<div slot="header">
-				<div class="flex flex-col gap-[4px] items-start">
-					<div class="flex gap-[4px] items-center">
-						<img
-							src="./assets/icons/gear.svg"
-							alt="settings icon"
-							class="w-[24px] h-[24px]"
-						/>
-						<h5 class="text-lg lg:text-2xl font-bold text-black">
-							Checks
-						</h5>
-					</div>
-
-					<p class="text-[#868686] text-[16px]">
-						Check help to control the data expected and fulfills a defined
-						service level. Activated checks are executed on a schedule.
-					</p>
-				</div>
-			</div>
+			<h5 slot="header" class="text-lg lg:text-2xl font-bold text-black">
+				Modal with footer
+			</h5>
 
 			<div slot="body">
-				<div class="flex flex-col gap-[6px]">
-					<ColumnSelector
-						:columns="unselectedOrders"
-						:selected="selectedOrders"
-						:filtered="filteredOrders"
-						@toggle="toggleOrders"
-						@clear-search="clearColumnSearch"
-						v-model="orderQuery"
-						label="Dynamic Label"
-					/>
-				</div>
+				<ColumnSelector
+					:columns="unselectedCoupons"
+					:selected="selectedCoupons"
+					:filtered="filteredCoupons"
+					@toggle="toggleCoupons"
+					@clear-search="couponQuery = ''"
+					v-model="couponQuery"
+					placeholder="Search or select Coupon checks"
+					label="A dynamic label"
+				/>
 			</div>
 
 			<div slot="footer">
@@ -111,38 +94,22 @@
 
 		<!-- Modal with no footer -->
 		<Modal :isActive="showModalNoFooter" @close="showModalNoFooter = false">
-			<div slot="header">
-				<div class="flex flex-col gap-[4px] items-start">
-					<div class="flex gap-[4px] items-center">
-						<img
-							src="./assets/icons/gear.svg"
-							alt="settings icon"
-							class="w-[24px] h-[24px]"
-						/>
-						<h5 class="text-lg lg:text-2xl font-bold text-black">
-							Checks
-						</h5>
-					</div>
+			<h5 slot="header" class="text-lg lg:text-2xl font-bold text-black">
+				Modal with no footer
+			</h5>
 
-					<p class="text-[#868686] text-[16px]">
-						Check help to control the data expected and fulfills a defined
-						service level. Activated checks are executed on a schedule.
-					</p>
-				</div>
-			</div>
-
-			<div slot="body">
+			<template slot="body">
 				<div class="flex flex-col gap-[6px]">
 					<ColumnSelector
 						:columns="unselectedOrders"
 						:selected="selectedOrders"
 						:filtered="filteredOrders"
 						@toggle="toggleOrders"
-						@clear-search="clearColumnSearch"
+						@clear-search="orderQuery = ''"
 						v-model="orderQuery"
 					/>
 				</div>
-			</div>
+			</template>
 		</Modal>
 
 		<!-- Modal with a lot of content  -->
@@ -167,26 +134,24 @@
 				</div>
 			</div>
 
-			<div slot="body">
-				<div class="flex flex-col gap-[6px]">
-					<ul v-if="filteredOrders.length > 0" class="bg-white h-full">
-						<li
-							v-for="column in filteredOrders"
-							:key="column"
-							class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
-						>
-							{{ column }}
-						</li>
-						<li
-							v-for="column in filteredOrders"
-							:key="column"
-							class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
-						>
-							{{ column }}
-						</li>
-					</ul>
-				</div>
-			</div>
+			<template slot="body">
+				<ul v-if="filteredOrders.length > 0" class="">
+					<li
+						v-for="column in filteredOrders"
+						:key="column"
+						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
+					>
+						{{ column }}
+					</li>
+					<li
+						v-for="column in filteredOrders"
+						:key="column"
+						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
+					>
+						{{ column }}
+					</li>
+				</ul>
+			</template>
 
 			<div slot="footer">
 				<div class="flex justify-end gap-[8px] p-[24px]">
@@ -264,7 +229,7 @@ export default {
 					(c) => c !== column
 				);
 			}
-			this.clearSearch();
+			this.orderQuery = "";
 		},
 
 		toggleCoupons(column) {
@@ -280,7 +245,7 @@ export default {
 					(c) => c !== column
 				);
 			}
-			this.clearSearch();
+			this.couponQuery = "";
 		},
 
 		// toggleOrder(column) {
@@ -290,7 +255,6 @@ export default {
 		// 	} else {
 		// 		this.addColumn(column);
 		// 	}
-		// 	this.clearSearch();
 		// },
 
 		// toggle({ col, selectedArray, unselectedArray }) {
@@ -326,10 +290,6 @@ export default {
 		// 	this.selectedOrders = this.selectedOrders.filter((c) => c !== column);
 		// 	this.unselectedOrders.unshift(column);
 		// },
-
-		clearColumnSearch() {
-			this.orderQuery = "";
-		},
 	},
 
 	computed: {
@@ -361,6 +321,19 @@ export default {
 	mounted() {
 		this.unselectedOrders = this.columns;
 		this.unselectedCoupons = this.coupons;
+	},
+
+	watch: {
+		showModalWithFooter: function (val) {
+			this.isShowing = val;
+			console.log("showModalWithFooter", val);
+		},
+		// selectedOrders: function (val) {
+		//   console.log("selectedOrders:", val);
+		// },
+		// selectedCoupons: function (val) {
+		//   console.log("selectedCoupons:", val);
+		// },
 	},
 };
 </script>

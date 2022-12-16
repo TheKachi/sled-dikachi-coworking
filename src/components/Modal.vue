@@ -3,12 +3,12 @@
 		<div
 			v-show="isActive"
 			class="absolute top-0 left-0 flex justify-center items-center w-full h-screen bg-black/60 z-50"
-			@click="$emit('close')"
+			@click.self="$emit('close')"
 		>
 			<Transition name="modal-inner">
 				<div
 					v-if="isActive"
-					class="bg-white rounded-[8px] shadow-[0_4px_50px_rgba(0,0,0,0.1)] self-end md:self-center w-screen md:max-w-screen-md"
+					class="z-[60] bg-white rounded-[8px] shadow-[0_4px_50px_rgba(0,0,0,0.1)] self-end md:self-center w-screen md:max-w-screen-md"
 				>
 					<!-- Header  -->
 					<div
@@ -44,7 +44,9 @@
 					</div>
 
 					<!-- Body -->
-					<div class="px-[24px] py-[12px] max-h-[500px] overflow-y-scroll">
+					<div
+						class="px-[24px] py-[12px] min-h-[300px] max-h-[500px] overflow-y-scroll"
+					>
 						<slot name="body"> default body </slot>
 					</div>
 

@@ -10,7 +10,7 @@
 			<!-- Select Dropdown -->
 			<div
 				:aria-label="placeholder"
-				@click="toggleDropdown"
+				@click.prevent="toggleDropdown"
 				class="text-[14px] pl-[10px] pr-[16px] py-[10px] flex items-center cursor-pointer rounded-4 z-0 bg-[#F8FAFC] focus:bg-[#F8FAFC]"
 			>
 				<div class="relative w-full">
@@ -29,7 +29,7 @@
 
 					<!-- Show and Hide icons  -->
 					<div class="absolute -right-[12px] top-[4px]">
-						<button @click="$emit('toggle')" class="">
+						<button @click.prevent="$emit('toggle')" class="">
 							<div v-if="isShowing" class="rotate-180">
 								<svg
 									width="16"
@@ -79,7 +79,7 @@
 						@input="$emit('input', $event.target.value)"
 					/><button
 						v-show="value !== ''"
-						@click="$emit('clear-search')"
+						@click.prevent="$emit('clear-search')"
 						class="absolute right-[16px] top-[12px] text-black"
 					>
 						<svg
@@ -109,7 +109,7 @@
 					<li
 						v-for="(column, i) in filtered"
 						:key="i"
-						@click="$emit('toggle', column)"
+						@click.prevent="$emit('toggle', column)"
 						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
 					>
 						<span v-if="selected.includes(column)">✔️</span>
@@ -126,7 +126,6 @@
 </template>
 
 <script>
-
 export default {
 	name: "ColumnSelector",
 
@@ -174,8 +173,6 @@ export default {
 			this.isShowing = true;
 		},
 
-		
-
 		close(e) {
 			if (!this.$el.contains(e.target)) {
 				this.isShowing = false;
@@ -183,10 +180,10 @@ export default {
 		},
 	},
 	mounted() {
-		document.addEventListener("click", this.close);
+		document.addEventListener("click.prevent", this.close);
 	},
 	beforeDestroy() {
-		document.removeEventListener("click", this.close);
+		document.removeEventListener("click.prevent", this.close);
 	},
 	emits: ["toggle", "clear-search"],
 };
