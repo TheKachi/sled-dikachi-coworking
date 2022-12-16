@@ -323,18 +323,6 @@ export default {
 		this.unselectedCoupons = this.coupons;
 	},
 
-	watch: {
-		showModalWithFooter: function (val) {
-			this.isShowing = val;
-			console.log("showModalWithFooter", val);
-		},
-		// selectedOrders: function (val) {
-		//   console.log("selectedOrders:", val);
-		// },
-		// selectedCoupons: function (val) {
-		//   console.log("selectedCoupons:", val);
-		// },
-	},
 };
 </script>
 
