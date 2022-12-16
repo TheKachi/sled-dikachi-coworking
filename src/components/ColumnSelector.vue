@@ -67,8 +67,7 @@
 			<!-- Dropdown  -->
 			<div
 				v-if="isShowing"
-				v-on-clickaway="() => away()"
-				class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] h-[250px] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
+				class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 			>
 				<!-- Search  -->
 				<div class="relative">
@@ -106,11 +105,11 @@
 					</button>
 				</div>
 
-				<ul v-if="filtered.length > 0" class="bg-white min-h-[250px]">
+				<ul v-if="filtered.length > 0" class="bg-white max-h-[250px]">
 					<li
+						v-for="(column, i) in filtered"
+						:key="i"
 						@click="$emit('toggle', column)"
-						v-for="column in filtered"
-						:key="column"
 						class="px-[10px] py-[6px] text-[#475569] text-[13px] hover:bg-[#F5F5F5] cursor-pointer"
 					>
 						<span v-if="selected.includes(column)">✔️</span>
@@ -127,13 +126,10 @@
 </template>
 
 <script>
-import { directive as onClickaway } from "vue-clickaway";
 
 export default {
 	name: "ColumnSelector",
-	directives: {
-		onClickaway: onClickaway,
-	},
+
 	props: {
 		columns: {
 			type: Array,
@@ -143,6 +139,7 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+
 		filtered: {
 			type: Array,
 			default: () => [],
@@ -176,11 +173,21 @@ export default {
 		showDropdown() {
 			this.isShowing = true;
 		},
-		away() {
-			console.log("clicked away");
-			this.isShowing = false;
+
+		
+
+		close(e) {
+			if (!this.$el.contains(e.target)) {
+				this.isShowing = false;
+			}
 		},
 	},
-	emits: ["toggle", "clear-search", "away"],
+	mounted() {
+		document.addEventListener("click", this.close);
+	},
+	beforeDestroy() {
+		document.removeEventListener("click", this.close);
+	},
+	emits: ["toggle", "clear-search"],
 };
 </script>

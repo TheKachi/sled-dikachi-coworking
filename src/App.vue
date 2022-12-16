@@ -9,10 +9,9 @@
 					:columns="unselectedOrders"
 					:selected="selectedOrders"
 					:filtered="filteredOrders"
-					@toggle="toggleColumn"
+					@toggle="toggleOrders"
 					@clear-search="clearColumnSearch"
 					v-model="orderQuery"
-					width="w-[300px]"
 					placeholder="Search or select Order checks"
 				/>
 
@@ -20,9 +19,7 @@
 					:columns="unselectedCoupons"
 					:selected="selectedCoupons"
 					:filtered="filteredCoupons"
-					@toggle="
-						() => toggle(column, selectedCoupons, unselectedCoupons)
-					"
+					@toggle="toggleCoupons"
 					@clear-search="couponQuery = ''"
 					v-model="couponQuery"
 					width="w-[300px]"
@@ -85,9 +82,10 @@
 						:columns="unselectedOrders"
 						:selected="selectedOrders"
 						:filtered="filteredOrders"
-						@toggle="toggleColumn"
+						@toggle="toggleOrders"
 						@clear-search="clearColumnSearch"
 						v-model="orderQuery"
+						label="Dynamic Label"
 					/>
 				</div>
 			</div>
@@ -139,7 +137,7 @@
 						:columns="unselectedOrders"
 						:selected="selectedOrders"
 						:filtered="filteredOrders"
-						@toggle="toggleColumn"
+						@toggle="toggleOrders"
 						@clear-search="clearColumnSearch"
 						v-model="orderQuery"
 					/>
@@ -237,7 +235,7 @@ export default {
 				"Date_Paid",
 				"Fee_Lines",
 			],
-			coupons: ["ID", "Total", "Links", "Number"],
+			coupons: ["Coupon", "Price", "Date", "Address"],
 			selectedOrders: [],
 			selectedCoupons: [],
 			unselectedOrders: [],
@@ -253,65 +251,81 @@ export default {
 
 	methods: {
 		// add column to selectedOrders array
-		toggleColumn(column) {
+		toggleOrders(column) {
 			// remove from selected array
 			if (this.selectedOrders.includes(column)) {
-				this.removeColumn(column);
+				this.selectedOrders = this.selectedOrders.filter(
+					(c) => c !== column
+				);
+				this.unselectedOrders.unshift(column);
 			} else {
-				this.addColumn(column);
-			}
-		},
-
-		toggle(col, selectedArray, unselectedArray) {
-			if (selectedArray.includes(col)) {
-				// this.remove(col, selectedArray, unselectedArray);
-				selectedArray = selectedArray.filter((c) => c !== column);
-
-				// push to unselected array
-				unselectedArray.unshift(column);
-			} else {
-				// this.add(col, selectedArray, unselectedArray);
-				selectedArray.push(col);
-				unselectedArray = unselectedArray.filter((c) => c !== column);
+				this.selectedOrders.push(column);
+				this.unselectedOrders = this.unselectedOrders.filter(
+					(c) => c !== column
+				);
 			}
 			this.clearSearch();
 		},
 
-		add(col, selectedArray, unselectedArray) {
-			selectedArray.push(col);
-			unselectedArray = unselectedArray.filter((c) => c !== column);
-
+		toggleCoupons(column) {
+			// remove from selected array
+			if (this.selectedCoupons.includes(column)) {
+				this.selectedCoupons = this.selectedCoupons.filter(
+					(c) => c !== column
+				);
+				this.unselectedCoupons.unshift(column);
+			} else {
+				this.selectedCoupons.push(column);
+				this.unselectedCoupons = this.unselectedCoupons.filter(
+					(c) => c !== column
+				);
+			}
 			this.clearSearch();
 		},
 
-		remove(col, selectedArray, unselectedArray) {
-			selectedArray = selectedArray.filter((c) => c !== col);
+		// toggleOrder(column) {
+		// 	// remove from selected array
+		// 	if (this.selectedOrders.includes(column)) {
+		// 		this.removeColumn(column);
+		// 	} else {
+		// 		this.addColumn(column);
+		// 	}
+		// 	this.clearSearch();
+		// },
 
-			// push to unselected array
-			unselectedArray.unshift(col);
-
-			this.clearSearch();
-		},
+		// toggle({ col, selectedArray, unselectedArray }) {
+		// 	console.log(
+		// 		"col:",
+		// 		col,
+		// 		"selectedArray:",
+		// 		selectedArray,
+		// 		"unselectedArray:",
+		// 		unselectedArray
+		// 	);
+		// 	if (selectedArray.includes(col)) {
+		// 		// remove from selected array and add to unselected array
+		// 		selectedArray = selectedArray.filter((c) => c !== col);
+		// 		unselectedArray = unselectedArray.unshift(col);
+		// 	} else {
+		// 		// this.add({ col, selectedArray, unselectedArray });
+		// 		selectedArray = selectedArray.push(col);
+		// 		unselectedArray = unselectedArray.filter((c) => c !== col);
+		// 	}
+		// },
 
 		// add column to selectedOrders array and move to the top
-		addColumn(column) {
-			this.selectedOrders.push(column);
-			this.unselectedOrders = this.unselectedOrders.filter(
-				(c) => c !== column
-			);
-
-			this.clearSearch();
-		},
+		// addColumn(column) {
+		// 	this.selectedOrders.push(column);
+		// 	this.unselectedOrders = this.unselectedOrders.filter(
+		// 		(c) => c !== column
+		// 	);
+		// },
 
 		// remove column from selectedOrders array and move to the bottom
-		removeColumn(column) {
-			this.selectedOrders = this.selectedOrders.filter((c) => c !== column);
-
-			// push to unselected array
-			this.unselectedOrders.unshift(column);
-
-			this.clearSearch();
-		},
+		// removeColumn(column) {
+		// 	this.selectedOrders = this.selectedOrders.filter((c) => c !== column);
+		// 	this.unselectedOrders.unshift(column);
+		// },
 
 		clearColumnSearch() {
 			this.orderQuery = "";
