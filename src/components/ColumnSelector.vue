@@ -2,8 +2,14 @@
 	<div>
 		<!-- Column Selector Container -->
 		<div class="relative" :class="[width]">
+			<!-- Label -->
+			<label class="text-[#475569] text-[14px] font-bold mb-[8px]">
+				{{ label }}
+			</label>
+
 			<!-- Select Dropdown -->
 			<div
+				:aria-label="placeholder"
 				@click="toggleDropdown"
 				class="text-[14px] pl-[10px] pr-[16px] py-[10px] flex items-center cursor-pointer rounded-4 z-0 bg-[#F8FAFC] focus:bg-[#F8FAFC]"
 			>
@@ -22,7 +28,7 @@
 					</p>
 
 					<!-- Show and Hide icons  -->
-					<div class="absolute z-40 -right-[12px] top-[4px]">
+					<div class="absolute -right-[12px] top-[4px]">
 						<button @click="$emit('toggle')" class="">
 							<div v-if="isShowing" class="rotate-180">
 								<svg
@@ -61,6 +67,7 @@
 			<!-- Dropdown  -->
 			<div
 				v-if="isShowing"
+				v-on-clickaway="() => away()"
 				class="w-full cursor-pointer absolute top-[100%] z-40 bg-[#FFF] h-[250px] min-h-[250px] max-h-[250px] overflow-y-auto mt-[8px] shadow-[0_4px_20px_rgba(101,119,149,0.2)]"
 			>
 				<!-- Search  -->
@@ -120,8 +127,13 @@
 </template>
 
 <script>
+import { directive as onClickaway } from "vue-clickaway";
+
 export default {
 	name: "ColumnSelector",
+	directives: {
+		onClickaway: onClickaway,
+	},
 	props: {
 		columns: {
 			type: Array,
@@ -143,6 +155,10 @@ export default {
 			type: String,
 			default: "Search or select a column",
 		},
+		label: {
+			type: String,
+			default: "Multiple columns",
+		},
 		value: {
 			type: String,
 			default: "",
@@ -160,7 +176,11 @@ export default {
 		showDropdown() {
 			this.isShowing = true;
 		},
+		away() {
+			console.log("clicked away");
+			this.isShowing = false;
+		},
 	},
-	emits: ["toggle", "clear-search", "input"],
+	emits: ["toggle", "clear-search", "away"],
 };
 </script>

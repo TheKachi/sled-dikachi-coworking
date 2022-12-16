@@ -2,13 +2,13 @@
 	<Transition name="modal-outer">
 		<div
 			v-show="isActive"
-			class="absolute top-0 left-0 flex justify-center items-center px-[32px] w-full h-screen bg-black/60 z-50"
+			class="absolute top-0 left-0 flex justify-center items-center w-full h-screen bg-black/60 z-50"
 			@click="$emit('close')"
 		>
 			<Transition name="modal-inner">
 				<div
 					v-if="isActive"
-					class="bg-white rounded-sm shadow-[0_4px_50px_rgba(0,0,0,0.1)] self-center max-w-screen-md"
+					class="bg-white rounded-[8px] shadow-[0_4px_50px_rgba(0,0,0,0.1)] self-end md:self-center w-screen md:max-w-screen-md"
 				>
 					<!-- Header  -->
 					<div
@@ -44,20 +44,13 @@
 					</div>
 
 					<!-- Body -->
-					<div class="px-[24px] py-[12px]">
+					<div class="px-[24px] py-[12px] max-h-[500px] overflow-y-scroll">
 						<slot name="body"> default body </slot>
 					</div>
 
 					<!-- Footer  -->
-					<div class="mt-auto p-[24px]">
-						<slot name="footer">
-							<button
-								class="bg-black text-white rounded"
-								@click="$emit('close')"
-							>
-								OK
-							</button>
-						</slot>
+					<div class="mt-auto">
+						<slot name="footer"></slot>
 					</div>
 				</div>
 			</Transition>
